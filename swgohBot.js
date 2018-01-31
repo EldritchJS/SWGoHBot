@@ -47,6 +47,7 @@ client.guildSettings = client.sequelize.define('settings', {
     useEmbeds: Sequelize.BOOLEAN,
     timezone: Sequelize.TEXT,
     announceChan: Sequelize.TEXT,
+    welcomeChan: Sequelize.TEXT,
     useEventPages: Sequelize.BOOLEAN,
     language: Sequelize.TEXT
 });

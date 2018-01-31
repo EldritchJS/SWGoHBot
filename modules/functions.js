@@ -126,7 +126,6 @@ module.exports = (client) => {
         }
     };
 
-
     /*
      * COMMAND ERROR
      * Spits back the correct usage and such for a command

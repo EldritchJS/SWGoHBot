@@ -18,7 +18,7 @@ exports.run = async (client, message, args, level) => {
         let value = '';
 
         // The list of commands that don't need another argument
-        const noVal = ["help", "announcechan", "reset"];
+        const noVal = ["help", "announcechan", "reset", "welcomechan"];
 
         // If there is no second argument, and it's not one that doesn't need one, return
         if (!args[1] && !noVal.includes(key)) {
@@ -64,7 +64,7 @@ exports.run = async (client, message, args, level) => {
                 return message.channel.send(message.language.COMMAND_SETCONF_ADMINROLE_SUCCESS(roleName, (args[1] === 'add' ? 'added to' : 'removed from')));
             case "enablewelcome":
                 if (onVar.includes(value.toLowerCase())) {
-                    const newChannel = message.guild.channels.find('name', guildConf['announceChan']);
+                    const newChannel = message.guild.channels.find('name', guildConf['welcomeChan']);
                     if (!newChannel) {
                         return message.channel.send(message.language.COMMAND_SETCONF_WELCOME_NEED_CHAN).then(msg => msg.delete(10000)).catch(console.error);
                     }
@@ -104,6 +104,16 @@ exports.run = async (client, message, args, level) => {
                     client.guildSettings.update({announceChan: value}, {where: {guildID: message.guild.id}});
                 } else {
                     client.guildSettings.update({announceChan: ''}, {where: {guildID: message.guild.id}});
+                }
+                break;
+            case "welcomechan":
+                if (value !== '') {
+                    const newChannel = message.guild.channels.find('name', value);
+                    if (!newChannel) return message.channel.send(message.language.COMMAND_SETCONF_ANNOUNCECHAN_NEED_CHAN(value)).then(msg => msg.delete(4000)).catch(console.error);
+                    if (!newChannel.permissionsFor(message.guild.me).has(["SEND_MESSAGES", "VIEW_CHANNEL"])) return message.channel.send(message.language.COMMAND_SETCONF_ANNOUNCECHAN_NO_PERMS);
+                    client.guildSettings.update({welcomeChan: value}, {where: {guildID: message.guild.id}});
+                } else {
+                    client.guildSettings.update({welcomeChan: ''}, {where: {guildID: message.guild.id}});
                 }
                 break;
             case "useeventpages": 
@@ -177,6 +187,7 @@ welcomeMessage :: The welcome message to send it you have it enabled.
 useEmbeds      :: Toggles whether or not to use embeds for the mods output.
 timezone       :: Sets the timezone that you want all time related commands to use. Look here if you need a list https://goo.gl/Vqwe49.
 announceChan   :: Sets the name of your announcements channel for events etc. Make sure it has permission to send them there.
+announceChan   :: Sets the name of your channel for welcome messages only. Make sure it has permission to send them there.
 useEventPages  :: Sets it so event view shows in pages, rather than super spammy.
 reset          :: Resets the config back to default (ONLY use this if you are sure)
 help           :: Shows this help message.
